@@ -1,6 +1,45 @@
 ---
 title: "Restaurant Booking Analysis with Bootstrapping"
 author: "Daniele Melotti"
-date: "Nov 2023"
+date: "Dec 2023"
 output: pdf_document
 ---
+
+# 1. Data Exploration
+
+## Load the data and convert _datetime_ into a POSIXlt date-time format
+
+We start by loading and taking a peek at the dataset:
+```{r}
+bookings <- read.table("../data/first_bookings_datetime_sample.txt",
+                       header=TRUE) # loading the data
+str(bookings$datetime) # understanding what data type are we dealing with
+```
+
+As we can see, we are dealing with a character vector, which is not ideal for performing statistical operations. Therefore, we will convert the content of _datetime_ to a POSIXlt date-time format and extract the component that interest us.
+
+## Calculate the time of each booking in minutes since the start of the day. Store the result in a new variable - _minday_
+
+Since we know that EZTABLE would like to start a promotion for new members to make their bookings earlier in the day, we focus on extracting the hours and minutes after converting _datetime_ to a POSIXlt object.
+```{r}
+# Converting datetime to a POSIXlt object, extracting hours and minutes
+hours <- as.POSIXlt(bookings$datetime, format="%m/%d/%Y %H:%M")$hour 
+mins <- as.POSIXlt(bookings$datetime, format="%m/%d/%Y %H:%M")$min
+```
+
+Afterwards, we calculate the time of each booking in minutes since the start of the day. So, we multiply the hours by 60 and add the minutes, resulting in a single numerical value representing the minute of the day:
+```{r}
+minday <- hours*60 + mins
+```
+
+## Plot the density of _minday_
+
+Now, we shall see the density of _minday_ so as to get an idea about how are the values of this vector distributed:
+```{r}
+plot(density(minday), main="Minute of the day of first ever booking",
+     col="cornflowerblue", lwd=2)
+setwd("/Users/danielemelotti/Library/CloudStorage/GoogleDrive-daniele.melotti@gapp.nthu.edu.tw/My Drive/5. REPOS/restaurant-booking-bootstrap")
+```
+
+We see a distribution that is similar to a bimodal, with a peek of booking time around 700 minutes and another around 1200 minutes, which likely represent booking requests before lunch and dinner time. 
+
