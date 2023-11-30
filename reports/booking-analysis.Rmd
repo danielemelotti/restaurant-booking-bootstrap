@@ -1,0 +1,6 @@
+---
+title: "Restaurant Booking Analysis with Bootstrapping"
+author: "Daniele Melotti"
+date: "Nov 2023"
+output: pdf_document
+---
