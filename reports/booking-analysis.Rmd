@@ -16,7 +16,7 @@ bookings <- read.table("../data/first_bookings_datetime_sample.txt",
 str(bookings$datetime) # understanding what data type are we dealing with
 ```
 
-As we can see, we are dealing with a character vector, which is not ideal for performing statistical operations. Therefore, we will convert the content of _datetime_ to a POSIXlt date-time format and extract the component that interest us.
+As we can see, our data is contained in a character vector, which is not ideal for performing statistical operations. Therefore, we will convert the content of _datetime_ to a POSIXlt date-time format and extract the components that interest us.
 
 ## Calculate the time of each booking in minutes since the start of the day. Store the result in a new variable - _minday_
 
@@ -29,7 +29,7 @@ mins <- as.POSIXlt(bookings$datetime, format="%m/%d/%Y %H:%M")$min
 
 Afterwards, we calculate the time of each booking in minutes since the start of the day. So, we multiply the hours by 60 and add the minutes, resulting in a single numerical value representing the minute of the day:
 ```{r}
-minday <- hours*60 + mins
+minday <- hours * 60 + mins
 ```
 
 ## Plot the density of _minday_
@@ -38,8 +38,32 @@ Now, we shall see the density of _minday_ so as to get an idea about how are the
 ```{r}
 plot(density(minday), main="Minute of the day of first ever booking",
      col="cornflowerblue", lwd=2)
-setwd("/Users/danielemelotti/Library/CloudStorage/GoogleDrive-daniele.melotti@gapp.nthu.edu.tw/My Drive/5. REPOS/restaurant-booking-bootstrap")
 ```
 
-We see a distribution that is similar to a bimodal, with a peek of booking time around 700 minutes and another around 1200 minutes, which likely represent booking requests before lunch and dinner time. 
+We see a distribution that is similar to a bimodal, with a peek of booking time around 700 minutes and another around 1200 minutes, which likely represent booking requests before lunch and dinner time. Next, we are going to conduct an analysis of the mean booking time.
 
+# 2. Mean Booking Times - Bootstrapping
+
+## Calculate the mean booking time and its standard error.
+
+We shall start by computing the mean booking time and its standard error. The standard error is computed by dividing the standard deviation of the booking time by the square root of the total number of bookings:
+```{r}
+minday_mean <- mean(minday) # mean
+minday_mean
+minday_se <- sd(minday)/sqrt(length(minday)) # standard error
+minday_se
+```
+
+The mean booking time corresponds to 942.4964 minutes. To make the time quickly readable and familiar, we use a custom function, located in the _functions.R_ script:
+```{r}
+source(file = "../R/functions.R")
+mins_to_time(minday_mean)
+```
+
+Now we know that the time at which a first booking is made on average is 15:42. Now that we computed mean and standard error, we are able to build a confidence interval:
+
+
+## Develop a 95% confidence interval for the mean booking time.
+
+
+## Implement a bootstrap approach to generate 2000 new samples from the original dataset.
