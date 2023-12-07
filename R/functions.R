@@ -16,6 +16,6 @@ mins_to_time <- function(minutes) {
 
 # Function that plots the density of a sample and computes its mean
 plot_resamples <- function(sample_i) {
-  lines(density(sample_i), col=rgb(0.5, 0.5, 1, 0.05))
+  lines(density(sample_i), col = rgb(0.5, 0.5, 1, 0.05))
   return(mean(sample_i))
 }

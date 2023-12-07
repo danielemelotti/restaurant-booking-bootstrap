@@ -101,36 +101,37 @@ plot(density(minday), lwd=0, ylim=c(0, 0.004), main = "Starting sample vs. Boots
 # Plot and get means of all bootstrapped samples
 sample_means <- apply(new_samples, 2, FUN=plot_resamples)
 
-# Add starting sample to the plot
+# Add starting sample density to the plot
 lines(density(minday), lwd = 2)
 
-abline(v = new_samples, col=rgb(0.0, 0.4, 0.0, 0.05))
-abline(v = minday_mean, lwd = 1.5, col = "tomato")
+# add vertical lines for the means of each the original sample and each new sample 
+abline(v = sample_means, col = rgb(0.0, 0.4, 0.0, 0.05))
+abline(v = minday_mean)
 ```
 
-We notice that the bootstrapped samples are all very close to the original sample.
-
-Now, let's visualize the 2000 means computed from the bootstrapped samples. We can take a look at how they compare with the original mean value from the starting sample.
+We notice that the bootstrapped samples' densities are all very close to the original sample. The same goes for the bootstrapped means, the confidence interval is certainly very narrow. Now, let's visualize the density of the 2000 bootstrapped means. We can take a look at how they compare with the original mean value from the starting sample.
 ```{r}
-plot(density(new_samples), lwd = 2, col = "cornflowerblue",
+plot(density(sample_means), lwd = 2, col = "cornflowerblue",
      main = "Density of bootstrapped samples")
-abline(v = new_samples, col=rgb(0.0, 0.4, 0.0, 0.05))
-abline(v = minday_mean, lwd = 1.5, col = "tomato")
+abline(v = minday_mean, lwd = 2, col = "tomato")
 ```
 
 We see that the bootstrapped means do not vary largely from the mean of the original sample. Most values are included between 941 and 944 minutes, with only a few means being outside of this interval.
 
 ## Calculate and interpret the 95% confidence interval of the bootstrapped means.
 
-We know what the 95% confidence interval is for the original sample's mean, now we can build a new interval for the resampled means:
+We know what the 95% confidence interval is for the original sample's mean, now we can build a new interval for the resampled means. We can build this interval using the `quantile()` function: 
 ```{r}
-resampled_lower_bound <- mean(bootstrapped) - 1.96 * sd(bootstrapped)/sqrt(length(bootstrapped))
-resampled_lower_bound
-resampled_lower_bound <- mean(bootstrapped) + 1.96 * sd(bootstrapped)/sqrt(length(bootstrapped))
-resampled_lower_bound
+resampled_CI <- quantile(sample_means, probs = c(0.025, 0.975))
+resampled_CI
 ```
 
+The 95% CI of the bootstrapped means ranges from 942.4681 to 942.5221 (or from 15:42 to 15:43).
+```{r}
+mins_to_time(resampled_CI)
+```
 
+This means that we are 95% confident that the true average booking time falls between 15:41 and 15:44.
 
 # 4.
 
