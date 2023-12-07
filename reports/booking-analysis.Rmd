@@ -93,26 +93,28 @@ new_samples <- replicate(n = 2000,
 
 ## Visualize the distribution of the means from the bootstrapped samples.
 
-We might be interested in seeing how the 2000 resampled datasets look like in comparison with the starting sample. We can display them on the same plot. We achieve this by applying the custom function `plot_resamples()`, included in the `functions.R` script. This function plots the density of a sample and computes its mean; if paired with `apply()`, it allows us to plot each samples' density and compute their means.
+We might be interested in seeing how the 2000 resampled datasets look like in comparison with the starting sample. We can display them on the same plot. We achieve this by applying the custom function `plot_resamples()`, included in the `functions.R` script. This function plots the density of a sample and then applies a function on the sample; if paired with `apply()`, it allows us to plot each samples' density and compute their means.
 ```{r}
 # Create an empty plotting space
-plot(density(minday), lwd=0, ylim=c(0, 0.004), main = "Starting sample vs. Bootstrapped samples")
+plot(density(minday), lwd=0, ylim=c(0, 0.004), xlab = "Minutes", ylab = "",
+     main = "Original sample vs. Bootstrapped samples with Mean indicators")
 
 # Plot and get means of all bootstrapped samples
-sample_means <- apply(new_samples, 2, FUN=plot_resamples)
+sample_means <- apply(new_samples, 2,
+                      FUN = function(x) plot_resamples(x, mean))
 
 # Add starting sample density to the plot
 lines(density(minday), lwd = 2)
 
 # add vertical lines for the means of each the original sample and each new sample 
 abline(v = sample_means, col = rgb(0.0, 0.4, 0.0, 0.05))
-abline(v = minday_mean)
+abline(v = minday_mean, lwd = 1.5, col = "red")
 ```
 
 We notice that the bootstrapped samples' densities are all very close to the original sample. The same goes for the bootstrapped means, the confidence interval is certainly very narrow. Now, let's visualize the density of the 2000 bootstrapped means. We can take a look at how they compare with the original mean value from the starting sample.
 ```{r}
 plot(density(sample_means), lwd = 2, col = "cornflowerblue",
-     main = "Density of bootstrapped samples")
+     main = "Density of Bootstrapped samples with Original mean indicator")
 abline(v = minday_mean, lwd = 2, col = "tomato")
 ```
 
@@ -122,17 +124,87 @@ We see that the bootstrapped means do not vary largely from the mean of the orig
 
 We know what the 95% confidence interval is for the original sample's mean, now we can build a new interval for the resampled means. We can build this interval using the `quantile()` function: 
 ```{r}
-resampled_CI <- quantile(sample_means, probs = c(0.025, 0.975))
-resampled_CI
+resampled_means_CI <- quantile(sample_means, probs = c(0.025, 0.975))
+resampled_means_CI
 ```
 
 The 95% CI of the bootstrapped means ranges from 942.4681 to 942.5221 (or from 15:42 to 15:43).
 ```{r}
-mins_to_time(resampled_CI)
+mins_to_time(resampled_means_CI)
 ```
 
-This means that we are 95% confident that the true average booking time falls between 15:41 and 15:44.
+This means that we are 95% confident that the true average booking time falls between 15:41 and 15:44. With this confidence interval, we complete the analysis of the average booking time.
 
-# 4.
+# 3. Median Booking Times - Bootstrapping
 
+## Determine the median booking time.
+
+Now, we focus on the median booking time, in other words, the time of the day by which half of the customers has made their first booking.
+```{r}
+# Computing median booking time
+minday_median <- median(minday)
+minday_median
+
+# Converting minutes to time
+mins_to_time(minday_median)
+```
+
+We see that the median booking time consists of 1040 minutes, in other words, it's 17:20.
+
+## Visualize the distribution of the medians from the bootstrapped samples.
+
+We can display the bootstrapped medians and compare them with the original sample's median booking time. We shall use `plot_resamples()` again.
+```{r}
+# Create an empty plotting space
+plot(density(minday), lwd=0, ylim=c(0, 0.004), xlab = "Minutes", ylab = "",
+     main = "Original sample vs. Bootstrapped samples with Median indicators")
+
+# Plot and get means of all bootstrapped samples
+sample_medians <- apply(new_samples, 2,
+                        FUN = function(x) plot_resamples(x, median))
+
+# Add starting sample density to the plot
+lines(density(minday), lwd = 2)
+
+# add vertical lines for the means of each the original sample and each new sample 
+abline(v = sample_medians, col = rgb(0.0, 0.4, 0.0, 0.05))
+abline(v = minday_median, lwd = 1.5, col = "red")
+```
+
+Interestingly, we see that the bootstrapped medians are close to the original sample's median, however, there are gaps in between these values. This is due to the fact that all the bootstrapped median values are represented by one of these:
+```{r}
+sort(unique(sample_medians))
+```
+
+Now, let's visualize the density of the 2000 bootstrapped medians:
+```{r}
+plot(density(sample_medians), lwd = 2, col = "cornflowerblue",
+     main = "Density of Bootstrapped samples with Original median indicator")
+abline(v = minday_median, lwd = 2, col = "tomato")
+```
+
+As we can see, the bootstrapped medians are distributed quite widely and non-normally. This makes it hard to use them for inference. 
+
+## Estimate and interpret the 95% confidence interval of the bootstrapped medians.
+
+Let's compute the 95% CI:
+```{r}
+resampled_median_CI <- quantile(sample_medians, probs = c(0.025, 0.975))
+resampled_median_CI
+```
+
+The confidence interval shows that we can be 95% confident that the true median booking time is included between minutes 1020 and 1050, else:
+```{r}
+mins_to_time(resampled_median_CI)
+```
+
+Between 17:00 and 17:30. This is a window of 30 minutes, which is quite large.
+
+# 4. Business Implications
+
+## Insights
 summary table: original samples vs resampled; means CIs...
+
+## Business Strategy Recommendations
+
+

@@ -20,7 +20,6 @@ The dataset used in this project consists of a sample drawn from a larger popula
 
 ## 3. Median Booking Times - Bootstrapping
 * Determine the median booking time.
-* Conduct a bootstrap analysis for the median booking time, similar to the mean.
 * Visualize the distribution of the medians from the bootstrapped samples.
 * Estimate and interpret the 95% confidence interval of the bootstrapped medians.
 
