@@ -5,9 +5,9 @@ date: "Dec 2023"
 output: pdf_document
 ---
 
-# 1. Data Exploration
+# 1. Data Exploration {#sec1}
 
-## Load the data and convert _datetime_ into a POSIXlt date-time format
+## Load the data and convert _datetime_ into a POSIXlt date-time format {#sec1a}
 
 We start by loading and taking a peek at the dataset:
 ```{r}
@@ -18,7 +18,7 @@ str(bookings$datetime) # understanding what data type are we dealing with
 
 As we can see, our data is contained in a character vector, which is not ideal for performing statistical operations. Therefore, we will convert the content of _datetime_ to a POSIXlt date-time format and extract the components that interest us.
 
-## Calculate the time of each booking in minutes since the start of the day. Store the result in a new variable - _minday_
+## Calculate the time of each booking in minutes since the start of the day. Store the result in a new variable - _minday_ {#sec1b}
 
 Since we know that EZTABLE would like to start a promotion for new members to make their bookings earlier in the day, we focus on extracting the hours and minutes after converting _datetime_ to a POSIXlt object.
 ```{r}
@@ -32,19 +32,19 @@ Afterwards, we calculate the time of each booking in minutes since the start of 
 minday <- hours * 60 + mins
 ```
 
-## Plot the density of _minday_
+## Plot the density of _minday_ {#sec1c}
 
 Now, we shall see the density of _minday_ so as to get an idea about how are the values of this vector distributed:
-```{r}
+```{r, fig.align='center'}
 plot(density(minday), main="Minute of the day of first ever booking",
      col="cornflowerblue", lwd=2)
 ```
 
-We see a distribution that is similar to a bimodal, with a peek of booking time around 700 minutes and another around 1200 minutes, which likely represent booking requests before lunch and dinner time. Next, we are going to conduct an analysis of the mean booking time.
+We see a _distribution that is similar to a bimodal_, with a peek of booking time around 700 minutes and another around 1200 minutes, which likely represent booking requests before lunch and dinner time. Next, we are going to conduct an analysis of the mean booking time.
 
-# 2. Mean Booking Times - Bootstrapping
+# 2. Mean Booking Times - Bootstrapping {#sec2}
 
-## Calculate the mean booking time and its standard error.
+## Calculate the mean booking time and its standard error. {#sec2a}
 
 We shall start by computing the mean booking time and its standard error. The standard error is computed by dividing the standard deviation of the booking time by the square root of the total number of bookings:
 ```{r}
@@ -54,7 +54,7 @@ minday_se <- sd(minday)/sqrt(length(minday)) # standard error
 minday_se
 ```
 
-The mean booking time corresponds to 942.4964 minutes. To make the time quickly readable and familiar, we use a custom function, located in the _functions.R_ script:
+The _mean booking time corresponds to 942.4964 minutes_. To make the time quickly readable and familiar, we use a custom function, located in the _functions.R_ script:
 ```{r}
 source(file = "../R/functions.R")
 mins_to_time(minday_mean)
@@ -62,7 +62,7 @@ mins_to_time(minday_mean)
 
 So, we know that the time at which a first booking is made on average is 15:42.
 
-## Develop a 95% confidence interval for the mean booking time.
+## Develop a 95% confidence interval for the mean booking time. {#sec2b}
 
 Recall that the data we have available is only a sample; now that we know mean and standard error, we are able to build a confidence interval and get a clearer idea about the true average booking time:
 ```{r}
@@ -73,13 +73,13 @@ upper_bound <- minday_mean + 1.96 * minday_se
 upper_bound
 ```
 
-The interval we just built suggests that we can be 95% confident that the true average booking time is between 941.2308 and 943.2308 minutes, or that it is included between 15:41 and 15:44.
+The interval we just built suggests that we can be 95% confident that the _true average booking time is between 941.2308 and 943.2308 minutes_, or that it is included between 15:41 and 15:44.
 ```{r}
 mins_to_time(lower_bound)
 mins_to_time(upper_bound)
 ```
 
-## Implement a bootstrap approach to generate 2000 new samples from the original dataset.
+## Implement a bootstrap approach to generate 2000 new samples from the original dataset. {#sec2c}
 
 Next, we are going to employ bootstrapping. This is a technique that resamples a dataset to create several simulated samples. To implement bootstrapping, we use the `replicate()` function, paired with `sample()`. Let's generate 2000 new samples from the original sample data:
 ```{r}
@@ -91,10 +91,10 @@ new_samples <- replicate(n = 2000,
                          sample(minday, length(minday), replace = TRUE))
 ```
 
-## Visualize the distribution of the means from the bootstrapped samples.
+## Visualize the distribution of the means from the bootstrapped samples. {#sec2d}
 
 We might be interested in seeing how the 2000 resampled datasets look like in comparison with the starting sample. We can display them on the same plot. We achieve this by applying the custom function `plot_resamples()`, included in the `functions.R` script. This function plots the density of a sample and then applies a function on the sample; if paired with `apply()`, it allows us to plot each samples' density and compute their means.
-```{r}
+```{r, fig.align='center'}
 # Create an empty plotting space
 plot(density(minday), lwd=0, ylim=c(0, 0.004), xlab = "Minutes", ylab = "",
      main = "Original sample vs. Bootstrapped samples with Mean indicators")
@@ -111,16 +111,16 @@ abline(v = sample_means, col = rgb(0.0, 0.4, 0.0, 0.05))
 abline(v = minday_mean, lwd = 1.5, col = "red")
 ```
 
-We notice that the bootstrapped samples' densities are all very close to the original sample. The same goes for the bootstrapped means, the confidence interval is certainly very narrow. Now, let's visualize the density of the 2000 bootstrapped means. We can take a look at how they compare with the original mean value from the starting sample.
-```{r}
+We notice that the _bootstrapped samples' densities are all very close to the original sample_. The same goes for the bootstrapped means, the confidence interval is certainly _very narrow_. Now, let's visualize the density of the 2000 bootstrapped means. We can take a look at how they compare with the original mean value from the starting sample.
+```{r, fig.align='center'}
 plot(density(sample_means), lwd = 2, col = "cornflowerblue",
      main = "Density of Bootstrapped samples with Original mean indicator")
 abline(v = minday_mean, lwd = 2, col = "tomato")
 ```
 
-We see that the bootstrapped means do not vary largely from the mean of the original sample. Most values are included between 941 and 944 minutes, with only a few means being outside of this interval.
+We see that the _bootstrapped means do not vary largely from the mean of the original sample_. Most values are included between 941 and 944 minutes, with only a few means being outside of this interval.
 
-## Calculate and interpret the 95% confidence interval of the bootstrapped means.
+## Calculate and interpret the 95% confidence interval of the bootstrapped means. {#sec2e}
 
 We know what the 95% confidence interval is for the original sample's mean, now we can build a new interval for the resampled means. We can build this interval using the `quantile()` function: 
 ```{r}
@@ -133,11 +133,11 @@ The 95% CI of the bootstrapped means ranges from 942.4681 to 942.5221 (or from 1
 mins_to_time(resampled_means_CI)
 ```
 
-This means that we are 95% confident that the true average booking time falls between 15:41 and 15:44. With this confidence interval, we complete the analysis of the average booking time.
+This means that we are 95% confident that the _true average booking time falls between 15:41 and 15:44_. With this confidence interval, we complete the analysis of the average booking time.
 
-# 3. Median Booking Times - Bootstrapping
+# 3. Median Booking Times - Bootstrapping {#sec3}
 
-## Determine the median booking time.
+## Determine the median booking time. {#sec3a}
 
 Now, we focus on the median booking time, in other words, the time of the day by which half of the customers has made their first booking.
 ```{r}
@@ -149,12 +149,12 @@ minday_median
 mins_to_time(minday_median)
 ```
 
-We see that the median booking time consists of 1040 minutes, in other words, it's 17:20.
+We see that the _median booking time is 1040 minutes_, in other words, it's 17:20.
 
-## Visualize the distribution of the medians from the bootstrapped samples.
+## Visualize the distribution of the medians from the bootstrapped samples. {#sec3b}
 
 We can display the bootstrapped medians and compare them with the original sample's median booking time. We shall use `plot_resamples()` again.
-```{r}
+```{r, fig.align='center'}
 # Create an empty plotting space
 plot(density(minday), lwd=0, ylim=c(0, 0.004), xlab = "Minutes", ylab = "",
      main = "Original sample vs. Bootstrapped samples with Median indicators")
@@ -171,21 +171,21 @@ abline(v = sample_medians, col = rgb(0.0, 0.4, 0.0, 0.05))
 abline(v = minday_median, lwd = 1.5, col = "red")
 ```
 
-Interestingly, we see that the bootstrapped medians are close to the original sample's median, however, there are gaps in between these values. This is due to the fact that all the bootstrapped median values are represented by one of these:
+Interestingly, we see that the _bootstrapped medians are close to the original sample's median_, however, there are gaps in between these values. This is due to the fact that all the bootstrapped median values are represented by one of these discrete values:
 ```{r}
 sort(unique(sample_medians))
 ```
 
 Now, let's visualize the density of the 2000 bootstrapped medians:
-```{r}
+```{r, fig.align='center'}
 plot(density(sample_medians), lwd = 2, col = "cornflowerblue",
      main = "Density of Bootstrapped samples with Original median indicator")
 abline(v = minday_median, lwd = 2, col = "tomato")
 ```
 
-As we can see, the bootstrapped medians are distributed quite widely and non-normally. This makes it hard to use them for inference. 
+As we can see, the _bootstrapped medians are distributed quite widely and non-normally_. This makes it hard to use them for inference. 
 
-## Estimate and interpret the 95% confidence interval of the bootstrapped medians.
+## Estimate and interpret the 95% confidence interval of the bootstrapped medians. {#sec3c}
 
 Let's compute the 95% CI:
 ```{r}
@@ -193,18 +193,27 @@ resampled_median_CI <- quantile(sample_medians, probs = c(0.025, 0.975))
 resampled_median_CI
 ```
 
-The confidence interval shows that we can be 95% confident that the true median booking time is included between minutes 1020 and 1050, else:
+The confidence interval shows that we can be 95% confident that the _true median booking time is included between minutes 1020 and 1050_, else:
 ```{r}
 mins_to_time(resampled_median_CI)
 ```
 
 Between 17:00 and 17:30. This is a window of 30 minutes, which is quite large.
 
-# 4. Business Implications
+# 4. Business Implications. {#sec4}
 
-## Insights
-summary table: original samples vs resampled; means CIs...
+## Insights {#sec4a}
 
-## Business Strategy Recommendations
+The bimodal distribution seen in [at the end of the data exploration section](#sec1c) suggests **two peak periods**, likely corresponding to lunch and dinner times. This pattern indicates that new members to EZTABLE prefer these periods for their first bookings. This trend presents an **opportunity to shift some of this demand to earlier times**. For example, offering special promotions or incentives for bookings made before the usual lunch peak could help redistribute the customer flow.
+The narrow confidence interval for the mean booking time seen in [mean analysis section](#sec2e) suggests a consistent pattern in customer behavior. Since the mean is later in the day (15:42), **EZTABLE can design targeted promotions aimed at times just before the average**, gradually encouraging customers to book earlier. On the other hand, the median analysis [showed us a distribution](sec3b) that doesn't allow us to conduct inference easily.
 
+## Business Strategy Recommendations {#sec4b}
 
+Considering what we have discovered so far, EZTABLE could employ the following strategies in order to encourage early bookings:
+
+1. **Targeted promotions for early bookings**: Implement special offers or discounts for reservations made during off-peak morning hours. This could include 'early bird' specials or exclusive deals for bookings made before a certain time. Such promotions can incentivize customers to book earlier, potentially redistributing the demand away from peak periods.
+2. **Personalized Marketing Campaigns**: Use customer data to send personalized messages or offers to those who typically book during peak times, encouraging them to try booking earlier. Personalized communication can be more effective in changing customer behavior, as it directly addresses their habits.
+3. **Loyalty Program Enhancements**: Introduce or enhance loyalty programs that reward early bookings. Points or rewards could be increased for reservations made during targeted early hours. A loyalty program can create a long-term incentive for customers to change their booking habits.
+4. **Community Engagement**: Engage with the community through social media or local events to promote the benefits of early dining, such as avoiding crowds and enjoying a more relaxed dining experience. Community engagement can help in building a positive brand image and attracting new customers.
+
+These are a few simple recommendations for EZTABLE, which are designed to leverage the insights from the booking time analysis to effectively encourage early-day bookings, thereby aiding EZTABLE in optimizing restaurant reservations and enhancing customer flow.
