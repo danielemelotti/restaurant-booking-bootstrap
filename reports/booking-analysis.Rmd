@@ -60,10 +60,78 @@ source(file = "../R/functions.R")
 mins_to_time(minday_mean)
 ```
 
-Now we know that the time at which a first booking is made on average is 15:42. Now that we computed mean and standard error, we are able to build a confidence interval:
-
+So, we know that the time at which a first booking is made on average is 15:42.
 
 ## Develop a 95% confidence interval for the mean booking time.
 
+Recall that the data we have available is only a sample; now that we know mean and standard error, we are able to build a confidence interval and get a clearer idea about the true average booking time:
+```{r}
+# 95% CI:
+lower_bound <- minday_mean - 1.96 * minday_se
+lower_bound
+upper_bound <- minday_mean + 1.96 * minday_se
+upper_bound
+```
+
+The interval we just built suggests that we can be 95% confident that the true average booking time is between 941.2308 and 943.2308 minutes, or that it is included between 15:41 and 15:44.
+```{r}
+mins_to_time(lower_bound)
+mins_to_time(upper_bound)
+```
 
 ## Implement a bootstrap approach to generate 2000 new samples from the original dataset.
+
+Next, we are going to employ bootstrapping. This is a technique that resamples a dataset to create several simulated samples. To implement bootstrapping, we use the `replicate()` function, paired with `sample()`. Let's generate 2000 new samples from the original sample data:
+```{r}
+# Setting seed
+set.seed(100)
+
+# Creating 2000 new samples (bootstrapped samples) from the starting data
+new_samples <- replicate(n = 2000,
+                         sample(minday, length(minday), replace = TRUE))
+```
+
+## Visualize the distribution of the means from the bootstrapped samples.
+
+We might be interested in seeing how the 2000 resampled datasets look like in comparison with the starting sample. We can display them on the same plot. We achieve this by applying the custom function `plot_resamples()`, included in the `functions.R` script. This function plots the density of a sample and computes its mean; if paired with `apply()`, it allows us to plot each samples' density and compute their means.
+```{r}
+# Create an empty plotting space
+plot(density(minday), lwd=0, ylim=c(0, 0.004), main = "Starting sample vs. Bootstrapped samples")
+
+# Plot and get means of all bootstrapped samples
+sample_means <- apply(new_samples, 2, FUN=plot_resamples)
+
+# Add starting sample to the plot
+lines(density(minday), lwd = 2)
+
+abline(v = new_samples, col=rgb(0.0, 0.4, 0.0, 0.05))
+abline(v = minday_mean, lwd = 1.5, col = "tomato")
+```
+
+We notice that the bootstrapped samples are all very close to the original sample.
+
+Now, let's visualize the 2000 means computed from the bootstrapped samples. We can take a look at how they compare with the original mean value from the starting sample.
+```{r}
+plot(density(new_samples), lwd = 2, col = "cornflowerblue",
+     main = "Density of bootstrapped samples")
+abline(v = new_samples, col=rgb(0.0, 0.4, 0.0, 0.05))
+abline(v = minday_mean, lwd = 1.5, col = "tomato")
+```
+
+We see that the bootstrapped means do not vary largely from the mean of the original sample. Most values are included between 941 and 944 minutes, with only a few means being outside of this interval.
+
+## Calculate and interpret the 95% confidence interval of the bootstrapped means.
+
+We know what the 95% confidence interval is for the original sample's mean, now we can build a new interval for the resampled means:
+```{r}
+resampled_lower_bound <- mean(bootstrapped) - 1.96 * sd(bootstrapped)/sqrt(length(bootstrapped))
+resampled_lower_bound
+resampled_lower_bound <- mean(bootstrapped) + 1.96 * sd(bootstrapped)/sqrt(length(bootstrapped))
+resampled_lower_bound
+```
+
+
+
+# 4.
+
+summary table: original samples vs resampled; means CIs...

@@ -15,8 +15,8 @@ The dataset used in this project consists of a sample drawn from a larger popula
 * Calculate the mean booking time and its standard error.
 * Develop a 95% confidence interval for the mean booking time.
 * Implement a bootstrap approach to generate 2000 new samples from the original dataset.
-* Visualize the distribution of the means from these bootstrapped samples.
-* Calculate and interpret the 95% confidence interval of the bootstrapped means using the `quantile()` function.
+* Visualize the distribution of the means from the bootstrapped samples.
+* Calculate and interpret the 95% confidence interval of the bootstrapped means.
 
 ## 3. Median Booking Times - Bootstrapping
 * Determine the median booking time.
