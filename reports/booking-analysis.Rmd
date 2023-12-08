@@ -38,7 +38,7 @@ minday <- hours * 60 + mins
 ## Plot the density of _minday_ {#sec1c}
 
 Now, we shall see the density of _minday_ so as to get an idea of how the values of this vector are distributed:
-```{r, fig.align='center'}
+```{r minday density, fig.align='center'}
 plot(density(minday), main="Minute of the day of first ever booking",
      ylab = "", xlab = "Minutes", col="cornflowerblue", lwd=2)
 ```
@@ -97,7 +97,7 @@ new_samples <- replicate(n = 2000,
 ## Visualize the distribution of the means from the bootstrapped samples {#sec2d}
 
 We might be interested in seeing how the 2000 bootstrapped samples look like in comparison with the starting sample. We can display them on the same plot. We achieve this by applying the custom function `plot_resamples()`, included in the `functions.R` script. This function plots the density of a sample and then applies a function on the sample; if paired with `apply()`, it allows us to plot each bootstraped samples' density and compute their means.
-```{r, fig.align='center'}
+```{r minday density + means, fig.align='center'}
 # Create an empty plotting space
 plot(density(minday), lwd=0, ylim=c(0, 0.004), xlab = "Minutes", ylab = "",
      main = "Original sample vs. Bootstrapped samples with Mean indicators")
@@ -115,7 +115,7 @@ abline(v = minday_mean, lwd = 1, col = "red")
 ```
 
 We notice that the _bootstrapped samples' densities are all very close to the original sample_. The same goes for the bootstrapped means, the confidence interval is certainly _very narrow_. Now, let's visualize the density of the 2000 bootstrapped means. We can take a look at how they compare with the original mean value from the starting sample.
-```{r, fig.align='center'}
+```{r means density, fig.align='center'}
 plot(density(sample_means), lwd = 2, col = "cornflowerblue",
      main = "Density of Bootstrapped samples with Original mean indicator",
      ylab = "", xlab = "Minutes")
@@ -158,7 +158,7 @@ We see that the _median booking time is 1040 minutes_, in other words, it's 17:2
 ## Visualize the distribution of the medians from the bootstrapped samples {#sec3b}
 
 We can display the bootstrapped medians and compare them with the original sample's median booking time. We shall use `plot_resamples()` again.
-```{r, fig.align='center'}
+```{r minday density + medians, fig.align='center'}
 # Create an empty plotting space
 plot(density(minday), lwd=0, ylim=c(0, 0.004), xlab = "Minutes", ylab = "",
      main = "Original sample vs. Bootstrapped samples with Median indicators")
@@ -181,7 +181,7 @@ sort(unique(sample_medians))
 ```
 
 Now, let's visualize the density of the 2000 bootstrapped medians:
-```{r, fig.align='center'}
+```{r medians density, fig.align='center'}
 plot(density(sample_medians), lwd = 2, col = "cornflowerblue",
      main = "Density of Bootstrapped samples with Original median indicator",
      ylab = "", xlab = "Minutes")

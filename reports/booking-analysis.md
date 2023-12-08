@@ -56,7 +56,7 @@ plot(density(minday), main="Minute of the day of first ever booking",
      ylab = "", xlab = "Minutes", col="cornflowerblue", lwd=2)
 ```
 
-<img src="booking-analysis_files/figure-gfm/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+<img src="booking-analysis_files/figure-gfm/minday density-1.png" style="display: block; margin: auto;" />
 
 We see a *distribution that is similar to a bimodal*, with a peek of
 booking times around 700 minutes and another around 1100 minutes, which
@@ -180,7 +180,7 @@ abline(v = sample_means, col = rgb(0.0, 0.4, 0.0, 0.05))
 abline(v = minday_mean, lwd = 1, col = "red")
 ```
 
-<img src="booking-analysis_files/figure-gfm/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+<img src="booking-analysis_files/figure-gfm/minday density + means-1.png" style="display: block; margin: auto;" />
 
 We notice that the *bootstrapped samples’ densities are all very close
 to the original sample*. The same goes for the bootstrapped means, the
@@ -195,7 +195,7 @@ plot(density(sample_means), lwd = 2, col = "cornflowerblue",
 abline(v = minday_mean, lwd = 2, col = "tomato") # adding vertical line for original sample mean
 ```
 
-<img src="booking-analysis_files/figure-gfm/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="booking-analysis_files/figure-gfm/means density-1.png" style="display: block; margin: auto;" />
 
 We see that the *bootstrapped means do not vary largely from the mean of
 the original sample*. Most values are included between 941 and 944
@@ -277,7 +277,7 @@ abline(v = sample_medians, col = rgb(0.0, 0.4, 0.0, 0.05))
 abline(v = minday_median, lwd = 1, col = "red")
 ```
 
-<img src="booking-analysis_files/figure-gfm/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+<img src="booking-analysis_files/figure-gfm/minday density + medians-1.png" style="display: block; margin: auto;" />
 
 Interestingly, we see that the *bootstrapped medians are close to the
 original sample’s median*, however, there are gaps in between these
@@ -299,7 +299,7 @@ plot(density(sample_medians), lwd = 2, col = "cornflowerblue",
 abline(v = minday_median, lwd = 2, col = "tomato") # add vertical line for original sample median
 ```
 
-<img src="booking-analysis_files/figure-gfm/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="booking-analysis_files/figure-gfm/medians density-1.png" style="display: block; margin: auto;" />
 
 As we can see, the *bootstrapped medians are distributed quite widely
 and non-normally*. This makes it hard to use them for inference.
