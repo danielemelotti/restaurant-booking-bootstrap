@@ -3,7 +3,7 @@ Restaurant Booking Analysis with Bootstrapping
 
 **Author:** Daniele Melotti<br> **Date:** Dec 2023
 
-*See README for list of tasks and project description.*
+*See README for info about data and list of tasks*.
 
 # 1. Data Exploration
 

@@ -6,7 +6,7 @@ output: github_document
 **Author:** Daniele Melotti<br>
 **Date:** Dec 2023
 
-_See README for list of tasks and project description._
+_See README for info about data and list of tasks_.
 
 # 1. Data Exploration {#sec1}
 
